@@ -21,7 +21,7 @@ namespace Rocky.Controllers
         public IActionResult Index()
         {
             // Get list of categories
-            IEnumerable<Category> objList = _db.Category;
+            IEnumerable<Category> objList = _db.Categories;
             return View(objList);
         }
 
@@ -39,7 +39,7 @@ namespace Rocky.Controllers
             if (ModelState.IsValid)
             {
                 // Add category in db
-                _db.Category.Add(category);
+                _db.Categories.Add(category);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -54,7 +54,7 @@ namespace Rocky.Controllers
             }
 
             // Get record from database
-            var category = _db.Category.Find(id);
+            var category = _db.Categories.Find(id);
             if (category == null)
             {
                 return NotFound();
@@ -69,7 +69,7 @@ namespace Rocky.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Category.Update(category);
+                _db.Categories.Update(category);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -84,7 +84,7 @@ namespace Rocky.Controllers
             {
                 return NotFound();
             }
-            var category = _db.Category.Find(id);
+            var category = _db.Categories.Find(id);
             // If id not found
             if (category == null)
             {
@@ -103,7 +103,7 @@ namespace Rocky.Controllers
                 return NotFound();
             }
             // Delete from database
-            _db.Category.Remove(category);
+            _db.Categories.Remove(category);
             _db.SaveChanges();
             return RedirectToAction("Index");
         }

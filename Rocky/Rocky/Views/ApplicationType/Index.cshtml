@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Rocky.Models.ApplicationType>
+
+@{
+    ViewData["Title"] = "Application Types";
+}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-8">
+            <h4>Application Types</h4>
+        </div>
+        <div class="col-4 text-end">
+            <a asp-action="Create" class="btn btn-primary">
+                Create Application Type
+            </a>
+        </div>
+    </div>
+    
+    @if (Model.Count() > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appType in Model)
+                {
+                    <tr>
+                        <td>@appType.Name</td>
+                        <td>
+                            <a class="btn btn-sm btn-secondary" asp-action="Edit" asp-route-id="@appType.Id">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@appType.Id">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+            {
+                <p>No application types found.</p>
+            }
+</div>
+

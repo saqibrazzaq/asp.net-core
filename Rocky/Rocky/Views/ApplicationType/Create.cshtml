@@ -1,0 +1,26 @@
+﻿@model Rocky.Models.ApplicationType
+
+@{
+    ViewData["Title"] = "Create Application Type";
+}
+
+<form method="post" asp-action="Create">
+    <div class="container">
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <h4>Create Application Type</h4>
+
+        <div class="input-group mb-3">
+            <label asp-for="Name" class="input-group-text"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <input type="submit" class="btn btn-primary" value="Create Application Type" />
+            <a asp-action="Index" class="btn btn-secondary ms-1">Back</a>
+        </div>
+
+    </div>
+</form>

@@ -1,0 +1,27 @@
+﻿@model Rocky.Models.ApplicationType
+
+@{
+    ViewData["Title"] = "Delete Application Type";
+}
+
+<form method="post" asp-action="Delete">
+
+    <div class="container">
+
+        <h4 class="mb-3">Delete Application Type</h4>
+
+        <p class="mb-3">
+            Are you sure you want to delete the following application type?
+        </p>
+
+        <h4 class="mb-3">@Model.Name</h4>
+
+        <div class="mb-3">
+            <input type="submit" class="btn btn-danger" value="YES, I want to DELETE the Application Type" />
+            <a class="btn btn-secondary ms-1" asp-action="Index">Back</a>
+        </div>
+
+    </div>
+
+</form>
+
