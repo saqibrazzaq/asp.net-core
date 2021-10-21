@@ -1,0 +1,57 @@
+﻿@model Rocky.Models.ViewModels.DetailsVM
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<form method="post" asp-action="Details">
+
+    <div class="container">
+
+        <input type="hidden" asp-for="Product.Id" />
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <h4>@Model.Product.Name</h4>
+            </div>
+            <div class="col-6 text-end">
+                <h4 class="text-warning">@String.Format("{0:c0}", Model.Product.Price)</h4>
+            </div>
+        </div>
+
+        <div class="mb-3 text-center row">
+            <div class="col-6 text-start">
+                <img src="@WC.ImagePath@Model.Product.Image" width="200" class="mb-3" />
+            </div>
+            <div class="col-6 text-start">
+                <span class="badge p-2 border text-dark">@Model.Product.Category.Name</span>
+                <span class="badge p-2 border text-dark">@Model.Product.ApplicationType.Name</span>
+
+                <p>@Html.Raw(Model.Product.Description)</p>
+            </div>
+        </div>
+
+        <div class="mb-3 text-center">
+
+        </div>
+
+        <div class="mb-3">
+            <a class="btn btn-secondary" asp-action="Index">
+                Back to List
+            </a>
+            @if (Model.ExistsInCart == true)
+            {
+                <a class="btn btn-danger" asp-action="RemoveFromCart" asp-route-id="@Model.Product.Id">
+                    Remove from Cart
+                </a>
+            }
+            else
+            {
+                <input type="submit" class="btn btn-primary" value="Add to Cart" />
+            }
+        </div>
+
+    </div>
+
+</form>
+

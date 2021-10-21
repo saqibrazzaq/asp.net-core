@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Rocky.Models.Product>
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    @if (Model.Count() > 0)
+    {
+
+        <form method="post" asp-action="">
+
+            <div class="card">
+
+                @* Header *@
+                <div class="card-header bg-dark bg-opacity-75">
+                    <div class="row">
+                        <div class="col-6 text-light mt-1">
+                            <i class="fa fa-shopping-cart"></i> &nbsp;
+                            Shopping Cart
+                        </div>
+                        <div class="col-6 text-end">
+                            <a class="btn btn-outline-secondary text-light">
+                                Continue Shopping
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                @* Body *@
+                <div class="card-body">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Product Details</th>
+                                <th>Price per sqft</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var prod in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="~/images/product/@prod.Image" width="100" />
+                                    </td>
+                                    <td>
+                                        <h4>@prod.Name</h4>
+                                        <small>@Html.Raw(prod.Description)</small>
+                                    </td>
+                                    <td>
+                                        <span class="h6">$@prod.Price</span> <small>/sqft</small>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-danger" asp-action="Remove" asp-route-id="@prod.Id">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+                @* Footer *@
+                <div class="card-footer text-end">
+                    <input type="submit" class="btn btn-primary" value="Continue" asp-action="IndexPost" />
+                </div>
+
+            </div>
+
+        </form>
+
+    }
+    else
+    {
+        <p class="display-6">Shopping cart is Empty. Please add items to the cart.</p>
+    }
+
+</div>
+

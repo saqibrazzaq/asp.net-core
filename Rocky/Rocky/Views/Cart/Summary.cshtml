@@ -1,0 +1,89 @@
+﻿@model Rocky.Models.ViewModels.ProductUserVM
+
+@{
+    ViewData["Title"] = "Order Summary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    <form method="post" asp-action="SummaryPost">
+
+        <div class="card">
+
+            @* Header *@
+            <div class="card-header bg-dark bg-opacity-75">
+                <div class="row">
+                    <div class="col-6 text-light mt-1">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;
+                        Order Summary
+                    </div>
+                    <div class="col-6 text-end text-light">
+                        <a class="btn btn-outline-secondary text-light" asp-action="Index">Back to Cart</a>
+                    </div>
+                </div>
+            </div>
+
+            @* Body *@
+            <div class="card-body">
+                <div class="row">
+                    @* Pickup details *@
+                    <div class="col-7">
+
+                        <h4 class="mb-3">User Details</h4>
+
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" asp-for="ApplicationUser.FullName"></label>
+                            <input class="form-control" asp-for="ApplicationUser.FullName" />
+                            <span class="text-danger" asp-validation-for="ApplicationUser.FullName"></span>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" asp-for="ApplicationUser.PhoneNumber"></label>
+                            <input class="form-control" asp-for="ApplicationUser.PhoneNumber" />
+                            <span class="text-danger" asp-validation-for="ApplicationUser.PhoneNumber"></span>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" asp-for="ApplicationUser.Email"></label>
+                            <input class="form-control" asp-for="ApplicationUser.Email" />
+                            <span class="text-danger" asp-validation-for="ApplicationUser.Email"></span>
+                        </div>
+
+                    </div>
+
+                    @* Order summary *@
+                    <div class="col-5">
+
+                        <h4 class="mb-3">Order Summary</h4>
+
+                        <table class="table table-bordered">
+                            @for (int i = 0; i < Model.Products.Count(); i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="hidden" asp-for="@Model.Products[i].Id" />
+                                        <input type="hidden" asp-for="@Model.Products[i].Name" />
+                                        <h6>@Model.Products[i].Name</h6>
+                                        <small>Price per Sqft: $@Model.Products[i].Price</small>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+
+            @* Card Footer*@
+            <div class="card-footer text-end">
+                <input type="submit" class="btn btn-primary" value="Submit Inquiry" />
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
