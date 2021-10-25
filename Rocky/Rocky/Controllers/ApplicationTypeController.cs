@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Rocky.Data;
 using Rocky.Models;
+using Rocky_DataAccess.Repository.IRepository;
 
 namespace Rocky.Controllers
 {
@@ -9,16 +10,16 @@ namespace Rocky.Controllers
     public class ApplicationTypeController : Controller
     {
         // Get db reference
-        private readonly ApplicationDbContext db;
-        public ApplicationTypeController(ApplicationDbContext dbContext)
+        private readonly IApplicationTypeRepository _repo;
+        public ApplicationTypeController(IApplicationTypeRepository repo)
         {
-            db = dbContext;
+            _repo = repo;
         }
         // Get - Load all application types
         public IActionResult Index()
         {
             // Get all application types from db
-            var applicationTypes = db.ApplicationTypes;
+            var applicationTypes = _repo.GetAll();
             return View(applicationTypes);
         }
 
@@ -35,8 +36,8 @@ namespace Rocky.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ApplicationTypes.Add(appType);
-                db.SaveChanges();
+                _repo.Add(appType);
+                _repo.Save();
                 return RedirectToAction("Index");
             }
             return View();
@@ -48,7 +49,7 @@ namespace Rocky.Controllers
             if (id == null || id == 0)
                 return NotFound();
             // Get application type from db
-            var appType = db.ApplicationTypes.Find(id);
+            var appType = _repo.Find(id.GetValueOrDefault());
             if (appType == null)
                 return NotFound();
             // Pass application type to the view
@@ -62,8 +63,8 @@ namespace Rocky.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Update(appType);
-                db.SaveChanges();
+                _repo.Update(appType);
+                _repo.Save();
                 return RedirectToAction("Index");
             }
             return View();
@@ -75,7 +76,7 @@ namespace Rocky.Controllers
             if (id == null || id == 0)
                 return NotFound();
             // Get application type from db
-            var appType = db.ApplicationTypes.Find(id);
+            var appType = _repo.Find(id.GetValueOrDefault());
             if (appType == null)
                 return NotFound();
             // Pass the application type to the view
@@ -88,8 +89,8 @@ namespace Rocky.Controllers
         public IActionResult Delete(ApplicationType appType)
         {
             // Delete from db
-            db.Remove(appType);
-            db.SaveChanges();
+            _repo.Remove(appType);
+            _repo.Save();
             return RedirectToAction("Index");
         }
     }

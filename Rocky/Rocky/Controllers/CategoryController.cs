@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Rocky.Data;
 using Rocky.Models;
+using Rocky_DataAccess.Repository.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +14,17 @@ namespace Rocky.Controllers
     public class CategoryController : Controller
     {
         // Get db instance
-        private readonly ApplicationDbContext _db;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public CategoryController(ApplicationDbContext dbContext)
+        public CategoryController(ICategoryRepository catetoryRepo)
         {
-            _db = dbContext;
+            _categoryRepo = catetoryRepo;
         }
         // Default - Get all categories
         public IActionResult Index()
         {
             // Get list of categories
-            IEnumerable<Category> objList = _db.Categories;
+            IEnumerable<Category> objList = _categoryRepo.GetAll();
             return View(objList);
         }
 
@@ -41,8 +42,8 @@ namespace Rocky.Controllers
             if (ModelState.IsValid)
             {
                 // Add category in db
-                _db.Categories.Add(category);
-                _db.SaveChanges();
+                _categoryRepo.Add(category);
+                _categoryRepo.Save();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -56,7 +57,7 @@ namespace Rocky.Controllers
             }
 
             // Get record from database
-            var category = _db.Categories.Find(id);
+            var category = _categoryRepo.Find(id.GetValueOrDefault());
             if (category == null)
             {
                 return NotFound();
@@ -71,8 +72,8 @@ namespace Rocky.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(category);
-                _db.SaveChanges();
+                _categoryRepo.Update(category);
+                _categoryRepo.Save();
                 return RedirectToAction("Index");
             }
             return View();
@@ -86,7 +87,7 @@ namespace Rocky.Controllers
             {
                 return NotFound();
             }
-            var category = _db.Categories.Find(id);
+            var category = _categoryRepo.Find(id.GetValueOrDefault());
             // If id not found
             if (category == null)
             {
@@ -105,8 +106,8 @@ namespace Rocky.Controllers
                 return NotFound();
             }
             // Delete from database
-            _db.Categories.Remove(category);
-            _db.SaveChanges();
+            _categoryRepo.Remove(category);
+            _categoryRepo.Save();
             return RedirectToAction("Index");
         }
     }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Rocky.Data;
 using Rocky.Models;
 using Rocky.Models.ViewModels;
+using Rocky_DataAccess.Repository.IRepository;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,11 +19,11 @@ namespace Rocky.Controllers
     public class ProductController : Controller
     {
         // Db reference
-        private readonly ApplicationDbContext db;
+        private readonly IProductRepository _repo;
         private readonly IWebHostEnvironment web;
-        public ProductController(ApplicationDbContext dbContext, IWebHostEnvironment webHost)
+        public ProductController(IProductRepository repo, IWebHostEnvironment webHost)
         {
-            db = dbContext;
+            _repo = repo;
             web = webHost;
         }
 
@@ -30,9 +31,7 @@ namespace Rocky.Controllers
         public IActionResult Index()
         {
             // Get all products from db
-            var products = db.Products
-                .Include(x => x.ApplicationType)
-                .Include(x => x.Category);
+            var products = _repo.GetAll(includeProperties: "Category,ApplicationType");
             return View(products);
         }
 
@@ -42,16 +41,8 @@ namespace Rocky.Controllers
             ProductVM productVM = new ProductVM()
             {
                 Product = new Product(),
-                CategorySelectList = db.Categories.Select(i => new SelectListItem
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString()
-                }),
-                ApplicationSelectList = db.ApplicationTypes.Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString()
-                })
+                CategorySelectList = _repo.GetAllDropdownList(WC.CategoryName),
+                ApplicationSelectList = _repo.GetAllDropdownList(WC.ApplicationTypeName)
             };
             
             // Load product if id is passed
@@ -62,7 +53,7 @@ namespace Rocky.Controllers
             else
             {
                 // Get product from db
-                productVM.Product = db.Products.Find(id);
+                productVM.Product = _repo.Find(id.GetValueOrDefault());
                 if (productVM.Product == null)
                 {
                     return NotFound();
@@ -99,7 +90,7 @@ namespace Rocky.Controllers
                     }
                     // Save only image name in db
                     productVM.Product.Image = filename + extension;
-                    db.Products.Add(productVM.Product);
+                    _repo.Add(productVM.Product);
                 }
                 else
                 {
@@ -123,23 +114,15 @@ namespace Rocky.Controllers
                         // Save new image in db
                         productVM.Product.Image = filename;
                     }
-                    db.Products.Update(productVM.Product);
+                    _repo.Update(productVM.Product);
                     
                 }
-                db.SaveChanges();
+                _repo.Save();
                 return RedirectToAction("Index");
             }
             // Load application type and category
-            productVM.CategorySelectList = db.Categories.Select(i => new SelectListItem
-            {
-                Text = i.Name,
-                Value = i.Id.ToString()
-            });
-            productVM.ApplicationSelectList = db.ApplicationTypes.Select(x => new SelectListItem
-            {
-                Text = x.Name,
-                Value = x.Id.ToString()
-            });
+            productVM.CategorySelectList = _repo.GetAllDropdownList(WC.CategoryName);
+            productVM.ApplicationSelectList = _repo.GetAllDropdownList(WC.ApplicationTypeName);
             return View(productVM);
         }
 
@@ -149,7 +132,7 @@ namespace Rocky.Controllers
             if (id == null || id == 0)
                 return NotFound();
             // Find in db
-            var product = db.Products.Include(x => x.Category).First(x => x.Id == id);
+            var product = _repo.FirstOrDefault(x => x.Id == id, includeProperties: "Category");
             // If product not found
             if (product == null)
                 return NotFound();
@@ -168,8 +151,8 @@ namespace Rocky.Controllers
                 System.IO.File.Delete(file);
 
             // Delete the product from db
-            db.Products.Remove(product);
-            db.SaveChanges();
+            _repo.Remove(product);
+            _repo.Save();
             return RedirectToAction("Index");
         }
     }

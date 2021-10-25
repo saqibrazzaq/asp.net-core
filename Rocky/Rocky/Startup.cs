@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocky.Data;
 using Rocky.Utility;
+using Rocky_DataAccess.Repository;
+using Rocky_DataAccess.Repository.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +50,11 @@ namespace Rocky
                 options.Cookie.IsEssential = true;
             });
 
+            // Add repositories
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+
             // Add email service
             services.AddTransient<IEmailSender, EmailSender>();
         }
@@ -73,6 +80,9 @@ namespace Rocky
             app.UseAuthorization();
 
             app.UseSession();
+
+            //Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
+//                "NTIzNzAzQDMxMzkyZTMzMmUzMEtDbmdYaVRqTzBUN1NLT3dlVm50OUU1OWhiL3J5cjhUQTY3dzhnOHB6WkU9;NTIzNzA0QDMxMzkyZTMzMmUzMEM5ZmpoRkY3UktIRVFuaDBGdi9lK1R2ck41VG9zT2hCWG9vVEVhZVVlZFk9");
 
             app.UseEndpoints(endpoints =>
             {
