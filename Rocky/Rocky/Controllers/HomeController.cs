@@ -10,18 +10,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Rocky.Utility;
+using Rocky_DataAccess.Repository.IRepository;
 
 namespace Rocky.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository _repoProduct;
+        private readonly ICategoryRepository _repoCategory;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+        public HomeController(ILogger<HomeController> logger, IProductRepository repoProduct,
+            ICategoryRepository repoCategory)
         {
             _logger = logger;
-            _db = db;
+            _repoProduct = repoProduct;
+            _repoCategory = repoCategory;
         }
 
         public IActionResult Index()
@@ -29,8 +33,8 @@ namespace Rocky.Controllers
             // Load all categories and products
             var homeVM = new HomeVM() 
             { 
-                Categories = _db.Categories,
-                Products = _db.Products.Include(t => t.ApplicationType).Include(t => t.Category)
+                Categories = _repoCategory.GetAll(),
+                Products = _repoProduct.GetAll(includeProperties: "ApplicationType,Category")
             };
             return View(homeVM);
         }
@@ -48,11 +52,8 @@ namespace Rocky.Controllers
             // Initialize VM
             var detailsVM = new DetailsVM()
             {
-                Product = _db.Products
-                    .Include(t => t.Category)
-                    .Include(t => t.ApplicationType)
-                    .Where(t => t.Id == id)
-                    .FirstOrDefault(),
+                Product = _repoProduct.FirstOrDefault(t => t.Id == id, 
+                    includeProperties: "ApplicationType,Category"),
                 ExistsInCart = false
             };
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Rocky.Models;
+using Rocky_Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,5 +23,7 @@ namespace Rocky.Data
         public DbSet<ApplicationType> ApplicationTypes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<InquiryHeader> InquiryHeaders { get; set; }
+        public DbSet<InquiryDetail> InquiryDetails { get; set; }
     }
 }
